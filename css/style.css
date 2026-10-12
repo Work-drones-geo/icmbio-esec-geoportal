@@ -1108,6 +1108,81 @@ html, body {
   from { transform: translateY(-20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+/* ==========================================================================
+   CONTROLE DE CAMADAS LEAFLET (L.control.layers) & TOGGLES DAS UCs
+   ========================================================================== */
+
+.leaflet-top.leaflet-right {
+  top: 76px !important;
+  right: 14px !important;
+}
+
+.leaflet-control-layers {
+  background: rgba(19, 42, 19, 0.95) !important;
+  border: 1px solid var(--color-accent) !important;
+  border-radius: 12px !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+  font-family: var(--font-family) !important;
+  font-size: 12px !important;
+  padding: 8px 12px !important;
+}
+
+.leaflet-control-layers-toggle {
+  background-color: rgba(19, 42, 19, 0.95) !important;
+  border: 1.5px solid var(--color-accent) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 10px 14px !important;
+  min-width: 220px !important;
+  backdrop-filter: none !important;
+}
+
+.leaflet-control-layers-overlays label,
+.leaflet-control-layers-base label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 6px 0 !important;
+  cursor: pointer !important;
+  font-size: 12px !important;
+}
+
+/* Toggles de Limites das UCs na Sidebar */
+.uc-layer-toggles-box {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(82, 183, 136, 0.15);
+  margin-bottom: 8px;
+}
+
+.uc-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  user-select: none;
+}
+
+.legend-line {
+  display: inline-block;
+  width: 22px;
+  border-radius: 2px;
+}
+
+.line-esec {
+  height: 4px;
+  background-color: #52B788;
+}
+
+.line-apa {
+  height: 0px;
+  border-bottom: 3px dashed #74C69D;
+}
 
 /* Responsividade Mobile Adicional */
 @media (max-width: 600px) {

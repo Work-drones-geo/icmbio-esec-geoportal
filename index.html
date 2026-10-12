@@ -181,9 +181,29 @@
 
           <!-- Unidades de Conservação e Atalhos -->
           <div class="panel-section">
-            <div class="section-title">Unidades de Conservação (ICMBio)</div>
-            <p style="font-size: 11.5px; color: var(--color-text-muted); margin-bottom: 8px;">
-              Clique para enquadrar a área de patrulhamento:
+            <div class="section-title">Limites das Unidades (ICMBio)</div>
+            
+            <!-- Controles de Ligar/Desligar Limites -->
+            <div class="uc-layer-toggles-box">
+              <label class="uc-toggle-item" style="cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="legend-line line-esec"></span>
+                  <span style="font-weight: 700; color: #fff;">ESEC da Guanabara</span>
+                </div>
+                <input type="checkbox" id="check-layer-esec" checked style="accent-color: var(--color-accent); cursor: pointer;">
+              </label>
+
+              <label class="uc-toggle-item" style="cursor: pointer; margin-top: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="legend-line line-apa"></span>
+                  <span style="font-weight: 700; color: #fff;">APA de Guapimirim</span>
+                </div>
+                <input type="checkbox" id="check-layer-apa" checked style="accent-color: var(--color-accent-light); cursor: pointer;">
+              </label>
+            </div>
+
+            <p style="font-size: 11px; color: var(--color-text-muted); margin: 12px 0 6px 0;">
+              Enquadramento rápido de patrulha:
             </p>
             <div class="uc-nav-btns">
               <button id="btn-zoom-esec" class="btn-secondary">🔎 ESEC Guanabara</button>

@@ -50,7 +50,10 @@ class MapEngine {
     await window.sentinelManager.init(this.map);
     await window.occurrenceManager.init(this.map);
 
-    // 6. Configurar Eventos do Mapa (clique, coordenadas do cursor)
+    // 6. Configurar Controle de Camadas Nativo (L.control.layers)
+    this.setupLayersControl();
+
+    // 7. Configurar Eventos do Mapa (clique, coordenadas do cursor)
     this.setupMapEvents();
 
     // 7. Forçar recalculo de dimensões para preenchimento de 100% da viewport
@@ -121,17 +124,17 @@ class MapEngine {
 
   async loadConservationUnits() {
     try {
-      // 1. ESEC Guanabara (Verde Esmeralda Vibrante #52B788)
+      // 1. ESEC Guanabara: Preenchimento 100% transparente para não tampar satélite/ortofoto, contorno sólido #52B788
       const esecResp = await fetch('data/esec_guanabara.geojson');
       if (esecResp.ok) {
         const esecGeo = await esecResp.json();
         this.esecLayer = L.geoJSON(esecGeo, {
           style: {
             color: '#52B788',
-            weight: 2.8,
+            weight: 3.2,
             dashArray: '',
-            fillColor: '#52B788',
-            fillOpacity: 0.18
+            fill: false,
+            fillOpacity: 0.0
           },
           onEachFeature: (feature, layer) => {
             const props = feature.properties || {};
@@ -152,17 +155,17 @@ class MapEngine {
     }
 
     try {
-      // 2. APA Guapimirim (Verde Menta / Oliva #74C69D)
+      // 2. APA Guapimirim: Preenchimento 100% transparente, contorno tracejado verde #74C69D
       const apaResp = await fetch('data/apa_guapimirim.geojson');
       if (apaResp.ok) {
         const apaGeo = await apaResp.json();
         this.apaLayer = L.geoJSON(apaGeo, {
           style: {
             color: '#74C69D',
-            weight: 2.2,
-            dashArray: '6, 6',
-            fillColor: '#74C69D',
-            fillOpacity: 0.10
+            weight: 2.6,
+            dashArray: '8, 6',
+            fill: false,
+            fillOpacity: 0.0
           },
           onEachFeature: (feature, layer) => {
             const props = feature.properties || {};
@@ -180,6 +183,65 @@ class MapEngine {
       }
     } catch (e) {
       console.warn('[MapEngine] Erro ao carregar APA Guapimirim:', e);
+    }
+  }
+
+  // Controle de Camadas do Leaflet (L.control.layers)
+  setupLayersControl() {
+    const baseMaps = {
+      "Satélite Esri (Global HD)": this.baseLayers['satellite'],
+      "Satélite Google (Híbrido)": this.baseLayers['google'],
+      "CartoDB Dark Matter": this.baseLayers['dark'],
+      "OpenStreetMap": this.baseLayers['osm']
+    };
+
+    const overlayMaps = {};
+    if (this.esecLayer) {
+      overlayMaps["<span style='color:#52B788; font-weight:700;'>🛡️ Limite ESEC Guanabara</span>"] = this.esecLayer;
+    }
+    if (this.apaLayer) {
+      overlayMaps["<span style='color:#74C69D; font-weight:700;'>🌲 Limite APA Guapimirim</span>"] = this.apaLayer;
+    }
+    if (window.sentinelManager && window.sentinelManager.layerGroup) {
+      overlayMaps["<span>🛰️ Sentinel-2 (Mosaico)</span>"] = window.sentinelManager.layerGroup;
+    }
+    if (window.occurrenceManager && window.occurrenceManager.layerGroup) {
+      overlayMaps["<span>📍 Ocorrências de Campo</span>"] = window.occurrenceManager.layerGroup;
+    }
+
+    if (this.layersControl) {
+      this.map.removeControl(this.layersControl);
+    }
+
+    this.layersControl = L.control.layers(baseMaps, overlayMaps, {
+      position: 'topright',
+      collapsed: true
+    }).addTo(this.map);
+
+    // Sincronizar com checkboxes da interface
+    this.map.on('overlayadd overlayremove', () => {
+      const chkEsec = document.getElementById('check-layer-esec');
+      const chkApa = document.getElementById('check-layer-apa');
+      if (chkEsec && this.esecLayer) chkEsec.checked = this.map.hasLayer(this.esecLayer);
+      if (chkApa && this.apaLayer) chkApa.checked = this.map.hasLayer(this.apaLayer);
+    });
+  }
+
+  toggleEsecLayer(visible) {
+    if (!this.esecLayer) return;
+    if (visible && !this.map.hasLayer(this.esecLayer)) {
+      this.esecLayer.addTo(this.map);
+    } else if (!visible && this.map.hasLayer(this.esecLayer)) {
+      this.map.removeLayer(this.esecLayer);
+    }
+  }
+
+  toggleApaLayer(visible) {
+    if (!this.apaLayer) return;
+    if (visible && !this.map.hasLayer(this.apaLayer)) {
+      this.apaLayer.addTo(this.map);
+    } else if (!visible && this.map.hasLayer(this.apaLayer)) {
+      this.map.removeLayer(this.apaLayer);
     }
   }
 

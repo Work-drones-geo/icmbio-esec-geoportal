@@ -198,6 +198,20 @@ class App {
     if (btnZoomApa) btnZoomApa.addEventListener('click', () => window.mapEngine.zoomToApa());
     if (btnZoomAll) btnZoomAll.addEventListener('click', () => window.mapEngine.zoomToOverview());
 
+    // Ligar / Desligar Limites das UCs na interface
+    const checkLayerEsec = document.getElementById('check-layer-esec');
+    const checkLayerApa = document.getElementById('check-layer-apa');
+    if (checkLayerEsec) {
+      checkLayerEsec.addEventListener('change', (e) => {
+        window.mapEngine.toggleEsecLayer(e.target.checked);
+      });
+    }
+    if (checkLayerApa) {
+      checkLayerApa.addEventListener('change', (e) => {
+        window.mapEngine.toggleApaLayer(e.target.checked);
+      });
+    }
+
     // Botão de Rastreamento GPS
     const btnGpsTrack = document.getElementById('btn-gps-track');
     if (btnGpsTrack) {
