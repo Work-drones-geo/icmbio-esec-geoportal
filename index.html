@@ -63,6 +63,15 @@
         <button id="btn-close-sidebar" class="btn-icon" style="width: 32px; height: 32px;" title="Fechar Menu">✕</button>
       </div>
 
+      <!-- Controle Deslizante de Opacidade/Transparência da Sidebar -->
+      <div class="sidebar-opacity-bar">
+        <div class="sidebar-opacity-label">
+          <span>👁️ Transparência do Painel:</span>
+          <span id="panel-opacity-val">88%</span>
+        </div>
+        <input type="range" id="panel-opacity-slider" min="0.15" max="1.0" step="0.05" value="0.88" class="range-slider">
+      </div>
+
       <!-- Abas de Navegação -->
       <nav class="sidebar-tabs">
         <button class="sidebar-tab-btn active" data-tab="sentinel">
@@ -382,6 +391,9 @@
                 <input type="text" id="occ-lon" class="form-control" readonly>
               </div>
             </div>
+            <button type="button" id="btn-use-current-gps" class="btn-secondary" style="width: 100%; margin-bottom: 14px; font-size: 11px; padding: 6px;">
+              📍 Preencher com Minha Posição GPS Atual
+            </button>
             <input type="hidden" id="occ-accuracy">
 
             <div class="form-group">
@@ -389,15 +401,47 @@
               <textarea id="occ-desc" class="form-control" rows="3" placeholder="Descreva os danos observados, espécies impactadas, maquinário ou suspeitos..." required></textarea>
             </div>
 
+            <!-- REGISTRO FOTOGRÁFICO DE CAMPO -->
             <div class="form-group">
-              <label class="form-label">Registro Fotográfico (Câmera do Celular)</label>
-              <label class="photo-capture-box" for="occ-photo">
-                <div style="font-size: 24px; margin-bottom: 4px;">📷</div>
-                <div style="font-size: 12px; font-weight: 700; color: var(--color-accent);">Tirar Foto ou Selecionar Arquivo</div>
-                <div style="font-size: 10px; color: var(--color-text-muted);">Comprime automaticamente para transmissão rápida</div>
-                <input type="file" id="occ-photo" accept="image/*" capture="environment" style="display: none;">
-              </label>
-              <img id="photo-preview" alt="Prévia da foto" style="display: none;">
+              <label class="form-label">Registro Fotográfico de Campo</label>
+              
+              <!-- Botões de Ação para Fotos -->
+              <div class="photo-actions-grid">
+                <button type="button" id="btn-start-camera" class="btn-photo-action btn-photo-camera">
+                  📸 Tirar Foto (Câmera)
+                </button>
+                <button type="button" id="btn-browse-gallery" class="btn-photo-action btn-photo-gallery">
+                  📁 Escolher Arquivo / Galeria
+                </button>
+                <input type="file" id="occ-file-input" accept="image/*" style="display: none;">
+              </div>
+
+              <!-- Visor de Câmera em Tempo Real (Webcam / Câmera Celular) -->
+              <div id="camera-stream-container" style="display: none;" class="camera-stream-box">
+                <div class="camera-video-frame">
+                  <video id="camera-video-element" autoplay playsinline muted></video>
+                </div>
+                <div class="camera-controls-bar">
+                  <button type="button" id="btn-take-snapshot" class="btn-primary" style="flex: 2;">
+                    ⚪ Capturar Foto
+                  </button>
+                  <button type="button" id="btn-stop-camera" class="btn-secondary" style="flex: 1;">
+                    ✕ Fechar Câmera
+                  </button>
+                </div>
+              </div>
+
+              <!-- Prévia da Foto Tirada ou Carregada -->
+              <div id="photo-preview-container" style="display: none;" class="photo-preview-box">
+                <img id="photo-preview-element" alt="Prévia da Foto de Campo">
+                <div class="photo-preview-bar">
+                  <span style="font-size: 11px; color: var(--color-accent); font-weight: 700;">✅ Foto Registrada</span>
+                  <button type="button" id="btn-delete-photo" class="btn-secondary" style="padding: 4px 10px; font-size: 11px;">
+                    🗑️ Excluir Foto
+                  </button>
+                </div>
+              </div>
+
             </div>
 
           </div>

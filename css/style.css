@@ -82,9 +82,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: rgba(19, 42, 19, 0.95);
   border: 1px solid var(--glass-border);
   border-radius: 14px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
@@ -200,17 +198,15 @@ html, body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: transparent;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   z-index: 990;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
+  display: none;
 }
 
 #sidebar-backdrop.active {
-  opacity: 1;
-  visibility: visible;
+  display: block;
 }
 
 #sidebar {
@@ -221,14 +217,36 @@ html, body {
   max-width: 90vw;
   height: 100vh;
   z-index: var(--z-sidebar);
-  background: var(--color-bg-sidebar);
+  background: rgba(19, 42, 19, var(--sidebar-opacity, 0.88));
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border-right: 1px solid var(--glass-border);
   box-shadow: 8px 0 32px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   transform: translateX(-100%);
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease;
   overflow: hidden;
+}
+
+.sidebar-opacity-bar {
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.sidebar-opacity-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-bottom: 5px;
+}
+
+#panel-opacity-val {
+  color: #FFFFFF;
 }
 
 #sidebar.open {
@@ -675,8 +693,9 @@ html, body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   z-index: var(--z-modal);
   display: flex;
   align-items: center;
@@ -767,27 +786,99 @@ html, body {
   gap: 12px;
 }
 
-.photo-capture-box {
-  border: 2px dashed rgba(82, 183, 136, 0.4);
-  border-radius: 10px;
-  padding: 16px;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  transition: all 0.2s;
+/* --- ESTILOS DE CÂMERA & REGISTRO FOTOGRÁFICO --- */
+.photo-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-.photo-capture-box:hover {
-  border-color: var(--color-accent);
-  background: rgba(82, 183, 136, 0.08);
-}
-
-#photo-preview {
-  max-width: 100%;
-  max-height: 180px;
+.btn-photo-action {
+  background: rgba(82, 183, 136, 0.12);
+  border: 1px solid var(--glass-border);
+  color: #FFFFFF;
+  padding: 11px 8px;
   border-radius: 8px;
-  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-photo-action:hover, .btn-photo-action:active {
+  background: var(--color-accent);
+  color: var(--color-bg-darkest);
+  border-color: var(--color-accent);
+}
+
+.btn-photo-camera {
+  border-color: #52B788;
+}
+
+.btn-photo-gallery {
+  border-color: #74C69D;
+}
+
+.camera-stream-box {
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid var(--color-accent);
+  margin-bottom: 12px;
+  animation: fadeIn 0.2s ease;
+}
+
+.camera-video-frame {
+  width: 100%;
+  height: 220px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#camera-video-element {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+.camera-controls-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.photo-preview-box {
+  border: 1px solid var(--color-accent);
+  border-radius: 10px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+#photo-preview-element {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 8px auto;
+}
+
+.photo-preview-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
 }
 
 .modal-footer {

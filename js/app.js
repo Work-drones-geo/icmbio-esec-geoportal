@@ -110,6 +110,35 @@ class App {
     if (backdrop) backdrop.addEventListener('click', toggleSidebar);
     if (btnCloseSidebar) btnCloseSidebar.addEventListener('click', toggleSidebar);
 
+    // Controle Deslizante de Opacidade/Transparência da Sidebar
+    const panelOpacitySlider = document.getElementById('panel-opacity-slider');
+    const panelOpacityVal = document.getElementById('panel-opacity-val');
+    const savedOpacity = localStorage.getItem('sidebar_opacity') || '0.88';
+
+    const applySidebarOpacity = (val) => {
+      sidebar.style.background = `rgba(19, 42, 19, ${val})`;
+      if (panelOpacityVal) panelOpacityVal.textContent = `${Math.round(val * 100)}%`;
+      if (panelOpacitySlider) panelOpacitySlider.value = val;
+      localStorage.setItem('sidebar_opacity', val);
+    };
+
+    applySidebarOpacity(savedOpacity);
+
+    if (panelOpacitySlider) {
+      panelOpacitySlider.addEventListener('input', (e) => {
+        applySidebarOpacity(e.target.value);
+      });
+    }
+
+    // Fechar modais ao pressionar ESC
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        window.occurrenceManager?.closeForm();
+        document.getElementById('modal-github')?.classList.remove('active');
+        if (sidebar.classList.contains('open')) toggleSidebar();
+      }
+    });
+
     // Abas da Sidebar
     document.querySelectorAll('.sidebar-tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {

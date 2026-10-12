@@ -1,5 +1,6 @@
 /**
  * Módulo de Gestão de Ocorrências e Fiscalização Ambiental de Campo
+ * Suporte a Câmera em Tempo Real (getUserMedia), Galeria de Fotos e Sincronização
  * Work Drones Geo • ICMBio WebGIS
  */
 
@@ -8,9 +9,10 @@ class OccurrenceManager {
     this.map = null;
     this.layerGroup = null;
     this.occurrences = [];
-    this.currentMarker = null;
+    this.tempMarker = null;
     this.selectedLatLng = null;
     this.capturedPhotoBase64 = '';
+    this.mediaStream = null;
 
     this.typeIcons = {
       'Supressão de Manguezal': { color: '#E63946', icon: '🪓' },
@@ -30,6 +32,7 @@ class OccurrenceManager {
     // Carregar ocorrências da base padrão e do armazenamento local
     await this.loadAllOccurrences();
     this.setupFormEvents();
+    this.setupCameraEvents();
   }
 
   async loadAllOccurrences() {
@@ -96,7 +99,6 @@ class OccurrenceManager {
 
       const marker = L.marker([lat, lon], { icon: customIcon });
 
-      // Popup HTML estruturado
       const popupHtml = `
         <div class="occ-popup-card">
           <div class="occ-popup-header" style="background: ${typeInfo.color};">
@@ -137,29 +139,51 @@ class OccurrenceManager {
 
     if (!modal || !form) return;
 
-    // Resetar campos
+    // Resetar campos e fotos
     form.reset();
     this.capturedPhotoBase64 = '';
-    const photoPreview = document.getElementById('photo-preview');
-    if (photoPreview) {
-      photoPreview.src = '';
-      photoPreview.style.display = 'none';
-    }
+    this.stopCamera();
 
-    // Preencher campos automáticos
+    const previewContainer = document.getElementById('photo-preview-container');
+    if (previewContainer) previewContainer.style.display = 'none';
+
+    const streamContainer = document.getElementById('camera-stream-container');
+    if (streamContainer) streamContainer.style.display = 'none';
+
+    // Preencher coordenadas
     document.getElementById('occ-lat').value = latlng.lat.toFixed(6);
     document.getElementById('occ-lon').value = latlng.lng.toFixed(6);
-    if (accuracy) {
-      document.getElementById('occ-accuracy').value = accuracy.toFixed(1);
-    } else {
-      document.getElementById('occ-accuracy').value = '';
-    }
+    document.getElementById('occ-accuracy').value = accuracy ? accuracy.toFixed(1) : '';
 
-    // Carregar nome do fiscal salvo anteriormente
+    // Nome do fiscal salvo
     const lastFiscal = localStorage.getItem('last_fiscal_name') || '';
     if (lastFiscal) {
       document.getElementById('occ-fiscal').value = lastFiscal;
     }
+
+    // Criar marcador temporário de seleção no mapa
+    if (this.tempMarker && this.map) {
+      this.map.removeLayer(this.tempMarker);
+    }
+
+    const tempIcon = L.divIcon({
+      className: 'temp-selection-pin',
+      html: `
+        <div style="
+          background: #52B788;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          border: 3px solid #FFFFFF;
+          box-shadow: 0 0 14px rgba(82, 183, 136, 0.9);
+          animation: pulseTracking 1.5s infinite;
+        "></div>
+      `,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12]
+    });
+
+    this.tempMarker = L.marker([latlng.lat, latlng.lng], { icon: tempIcon }).addTo(this.map);
 
     modal.classList.add('active');
   }
@@ -167,60 +191,240 @@ class OccurrenceManager {
   closeForm() {
     const modal = document.getElementById('modal-occurrence');
     if (modal) modal.classList.remove('active');
+    this.stopCamera();
+
+    if (this.tempMarker && this.map) {
+      this.map.removeLayer(this.tempMarker);
+      this.tempMarker = null;
+    }
     this.selectedLatLng = null;
+  }
+
+  // --- CÂMERA EM TEMPO REAL & CAPTURA ---
+  setupCameraEvents() {
+    const btnStartCamera = document.getElementById('btn-start-camera');
+    const btnBrowseGallery = document.getElementById('btn-browse-gallery');
+    const fileInput = document.getElementById('occ-file-input');
+    const btnTakeSnapshot = document.getElementById('btn-take-snapshot');
+    const btnStopCamera = document.getElementById('btn-stop-camera');
+    const btnDeletePhoto = document.getElementById('btn-delete-photo');
+    const btnUseCurrentGps = document.getElementById('btn-use-current-gps');
+
+    if (btnStartCamera) {
+      btnStartCamera.addEventListener('click', () => this.startCamera());
+    }
+
+    if (btnBrowseGallery && fileInput) {
+      btnBrowseGallery.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          this.handleFileSelected(e.target.files[0]);
+        }
+      });
+    }
+
+    if (btnTakeSnapshot) {
+      btnTakeSnapshot.addEventListener('click', () => this.takeSnapshot());
+    }
+
+    if (btnStopCamera) {
+      btnStopCamera.addEventListener('click', () => this.stopCamera());
+    }
+
+    if (btnDeletePhoto) {
+      btnDeletePhoto.addEventListener('click', () => this.deletePhoto());
+    }
+
+    if (btnUseCurrentGps) {
+      btnUseCurrentGps.addEventListener('click', () => this.useCurrentGps());
+    }
+  }
+
+  async startCamera() {
+    const video = document.getElementById('camera-video-element');
+    const streamContainer = document.getElementById('camera-stream-container');
+    const previewContainer = document.getElementById('photo-preview-container');
+
+    if (previewContainer) previewContainer.style.display = 'none';
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      window.app.showToast('Câmera não suportada neste navegador. Use a opção de arquivo/galeria.', 'warning');
+      document.getElementById('occ-file-input')?.click();
+      return;
+    }
+
+    try {
+      // Tentar abrir câmera traseira no mobile ou webcam no PC
+      this.mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: 'environment' },
+          width: { ideal: 1280 }
+        },
+        audio: false
+      });
+
+      if (video) {
+        video.srcObject = this.mediaStream;
+        await video.play();
+      }
+
+      if (streamContainer) {
+        streamContainer.style.display = 'block';
+      }
+    } catch (err) {
+      console.warn('[OccurrenceManager] Erro ao acessar câmera:', err);
+      window.app.showToast('Acesso à câmera bloqueado. Selecione uma foto da galeria.', 'warning');
+      document.getElementById('occ-file-input')?.click();
+    }
+  }
+
+  takeSnapshot() {
+    const video = document.getElementById('camera-video-element');
+    const streamContainer = document.getElementById('camera-stream-container');
+    const previewContainer = document.getElementById('photo-preview-container');
+    const previewImg = document.getElementById('photo-preview-element');
+
+    if (!video || !video.videoWidth) {
+      window.app.showToast('Aguarde o vídeo da câmera iniciar antes de disparar.', 'warning');
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    const maxDim = 1024;
+    let width = video.videoWidth;
+    let height = video.videoHeight;
+
+    if (width > height) {
+      if (width > maxDim) {
+        height = Math.round(height * (maxDim / width));
+        width = maxDim;
+      }
+    } else {
+      if (height > maxDim) {
+        width = Math.round(width * (maxDim / height));
+        height = maxDim;
+      }
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, width, height);
+
+    this.capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.75);
+
+    // Desligar câmera e mostrar prévia
+    this.stopCamera();
+
+    if (previewImg) previewImg.src = this.capturedPhotoBase64;
+    if (previewContainer) previewContainer.style.display = 'block';
+
+    window.app.showToast('📸 Foto capturada com sucesso!', 'success');
+  }
+
+  stopCamera() {
+    if (this.mediaStream) {
+      this.mediaStream.getTracks().forEach(track => track.stop());
+      this.mediaStream = null;
+    }
+    const streamContainer = document.getElementById('camera-stream-container');
+    if (streamContainer) streamContainer.style.display = 'none';
+
+    const video = document.getElementById('camera-video-element');
+    if (video) video.srcObject = null;
+  }
+
+  handleFileSelected(file) {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxDim = 1024;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxDim) {
+            height = Math.round(height * (maxDim / width));
+            width = maxDim;
+          }
+        } else {
+          if (height > maxDim) {
+            width = Math.round(width * (maxDim / height));
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        this.capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.75);
+
+        const previewImg = document.getElementById('photo-preview-element');
+        const previewContainer = document.getElementById('photo-preview-container');
+        if (previewImg) previewImg.src = this.capturedPhotoBase64;
+        if (previewContainer) previewContainer.style.display = 'block';
+
+        window.app.showToast('📁 Foto carregada e otimizada!', 'success');
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  deletePhoto() {
+    this.capturedPhotoBase64 = '';
+    const previewContainer = document.getElementById('photo-preview-container');
+    const previewImg = document.getElementById('photo-preview-element');
+    if (previewImg) previewImg.src = '';
+    if (previewContainer) previewContainer.style.display = 'none';
+    const fileInput = document.getElementById('occ-file-input');
+    if (fileInput) fileInput.value = '';
+    window.app.showToast('Foto removida.', 'info');
+  }
+
+  useCurrentGps() {
+    if (window.mapEngine && window.mapEngine.currentPosition) {
+      const { lat, lon, acc } = window.mapEngine.currentPosition;
+      document.getElementById('occ-lat').value = lat.toFixed(6);
+      document.getElementById('occ-lon').value = lon.toFixed(6);
+      document.getElementById('occ-accuracy').value = acc.toFixed(1);
+
+      if (this.tempMarker) {
+        this.tempMarker.setLatLng([lat, lon]);
+      }
+      window.app.showToast(`Coordenadas atualizadas para o GPS atual (±${acc.toFixed(1)}m)!`, 'success');
+    } else {
+      window.app.showToast('Buscando sinal GPS...', 'info');
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const acc = pos.coords.accuracy;
+            document.getElementById('occ-lat').value = lat.toFixed(6);
+            document.getElementById('occ-lon').value = lon.toFixed(6);
+            document.getElementById('occ-accuracy').value = acc.toFixed(1);
+
+            if (this.tempMarker) {
+              this.tempMarker.setLatLng([lat, lon]);
+            }
+            window.app.showToast(`Coordenadas atualizadas para o GPS atual (±${acc.toFixed(1)}m)!`, 'success');
+          },
+          (err) => {
+            window.app.showToast('Sinal GPS indisponível no momento.', 'warning');
+          },
+          { enableHighAccuracy: true, timeout: 8000 }
+        );
+      }
+    }
   }
 
   setupFormEvents() {
     const form = document.getElementById('form-occurrence');
-    const photoInput = document.getElementById('occ-photo');
-    const photoPreview = document.getElementById('photo-preview');
-
-    // Compressão automática de imagem da câmera via Canvas
-    if (photoInput) {
-      photoInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const maxDim = 1024;
-            let width = img.width;
-            let height = img.height;
-
-            if (width > height) {
-              if (width > maxDim) {
-                height *= maxDim / width;
-                width = maxDim;
-              }
-            } else {
-              if (height > maxDim) {
-                width *= maxDim / height;
-                height = maxDim;
-              }
-            }
-
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            // Converte para JPEG com qualidade balanceada (75%)
-            this.capturedPhotoBase64 = canvas.toDataURL('image/jpeg', 0.75);
-
-            if (photoPreview) {
-              photoPreview.src = this.capturedPhotoBase64;
-              photoPreview.style.display = 'block';
-            }
-          };
-          img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -243,6 +447,15 @@ class OccurrenceManager {
     const fiscal = document.getElementById('occ-fiscal').value.trim();
     const descricao = document.getElementById('occ-desc').value.trim();
     const precisao = parseFloat(document.getElementById('occ-accuracy').value) || null;
+
+    if (isNaN(lat) || isNaN(lon)) {
+      window.app.showToast('Coordenadas geográficas inválidas.', 'danger');
+      if (btnSubmit) {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = '<span>Salvar &amp; Transmitir Ocorrência</span>';
+      }
+      return;
+    }
 
     if (fiscal) {
       localStorage.setItem('last_fiscal_name', fiscal);
@@ -272,13 +485,22 @@ class OccurrenceManager {
     // 1. Salvar no banco de dados local IndexedDB
     await window.offlineStore.saveOccurrence(feature);
 
-    // 2. Adicionar ao array em memória e re-renderizar mapa
+    // 2. Adicionar ao array e re-renderizar mapa
     this.occurrences.push(feature);
     this.renderMarkers();
     this.updateCounter();
 
-    // 3. Transmitir ao GitHub se online
-    window.app.showToast('Salvando intercorrência...', 'info');
+    // 3. Remover marcador provisório
+    if (this.tempMarker && this.map) {
+      this.map.removeLayer(this.tempMarker);
+      this.tempMarker = null;
+    }
+
+    // 4. Fechar modal antes de notificar
+    this.closeForm();
+
+    // 5. Transmitir ao GitHub
+    window.app.showToast('Ocorrência gravada localmente. Transmitindo...', 'info');
     const syncResult = await window.gitHubSync.commitOccurrence(feature);
 
     if (syncResult.success) {
@@ -286,15 +508,13 @@ class OccurrenceManager {
     } else if (syncResult.offline) {
       window.app.showToast(`💾 ${syncResult.message}`, 'warning');
     } else {
-      window.app.showToast(`⚠️ Salvo no aparelho. Erro no GitHub: ${syncResult.message}`, 'warning');
+      window.app.showToast(`💾 Salva no aparelho. Sincronização: ${syncResult.message}`, 'info');
     }
 
     if (btnSubmit) {
       btnSubmit.disabled = false;
       btnSubmit.innerHTML = '<span>Salvar &amp; Transmitir Ocorrência</span>';
     }
-
-    this.closeForm();
   }
 
   // --- Exportadores para Backup em Campo ---
