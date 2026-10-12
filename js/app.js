@@ -101,6 +101,9 @@ class App {
     const toggleSidebar = () => {
       sidebar.classList.toggle('open');
       backdrop.classList.toggle('active');
+      if (window.mapEngine) {
+        window.mapEngine.invalidateSizeMultiple();
+      }
     };
 
     if (btnToggle) btnToggle.addEventListener('click', toggleSidebar);

@@ -123,17 +123,14 @@ class SentinelManager {
 
     this.tileLayer = L.tileLayer(tileUrl, {
       maxZoom: 19,
-      minZoom: 9,
+      minZoom: 8,
+      pane: 'sentinelPane',
       opacity: this.opacity,
       attribution: `&copy; ESA Sentinel-2 L2A | Planetary Computer | Work Drones Geo (${this.currentYear})`
     });
 
     if (this.isVisible) {
       this.tileLayer.addTo(this.map);
-      // Mantém a camada de satélite abaixo das camadas vetoriais de limites e ocorrências
-      if (this.tileLayer.bringToBack) {
-        this.tileLayer.bringToBack();
-      }
     }
   }
 

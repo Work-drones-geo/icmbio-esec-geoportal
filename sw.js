@@ -1,5 +1,5 @@
-const CACHE_NAME = 'icmbio-geoportal-v1.2';
-const TILE_CACHE_NAME = 'icmbio-tiles-cache-v1';
+const CACHE_NAME = 'icmbio-geoportal-v1.3';
+const TILE_CACHE_NAME = 'icmbio-tiles-cache-v1.3';
 
 const STATIC_ASSETS = [
   './',
@@ -64,7 +64,16 @@ self.addEventListener('fetch', (event) => {
   }
 
   // Requisições para tiles de mapa ou serviços externos de imagem
-  if (url.pathname.includes('/tiles/') || url.hostname.includes('tile.') || url.hostname.includes('basemaps.cartocdn.com') || url.hostname.includes('planetarycomputer.microsoft.com')) {
+  const isTileRequest = url.pathname.includes('/tile/') ||
+                        url.pathname.includes('/tiles/') ||
+                        url.hostname.includes('arcgisonline.com') ||
+                        url.hostname.includes('google.com') ||
+                        url.hostname.includes('openstreetmap.org') ||
+                        url.hostname.includes('tile.') ||
+                        url.hostname.includes('cartocdn.com') ||
+                        url.hostname.includes('planetarycomputer.microsoft.com');
+
+  if (isTileRequest) {
     event.respondWith(
       caches.open(TILE_CACHE_NAME).then(async (tileCache) => {
         const cachedResponse = await tileCache.match(event.request);

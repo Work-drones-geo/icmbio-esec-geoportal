@@ -29,48 +29,80 @@ class MapEngine {
       center: this.center,
       zoom: this.defaultZoom,
       zoomControl: false,
-      attributionControl: false
+      attributionControl: false,
+      preferCanvas: true
     });
+
+    // 2. Criar Pane exclusivo para o Sentinel-2 (fica acima do mapa base, abaixo dos vetores)
+    this.map.createPane('sentinelPane');
+    this.map.getPane('sentinelPane').style.zIndex = 250;
 
     // Reposicionar controle de zoom para canto inferior direito
     L.control.zoom({ position: 'bottomright' }).addTo(this.map);
 
-    // 2. Mapas Base
+    // 3. Mapas Base
     this.setupBaseLayers();
 
-    // 3. Carregar Polígonos das UCs
+    // 4. Carregar Polígonos das UCs
     await this.loadConservationUnits();
 
-    // 4. Inicializar Módulos Filhos
+    // 5. Inicializar Módulos Filhos
     await window.sentinelManager.init(this.map);
     await window.occurrenceManager.init(this.map);
 
-    // 5. Configurar Eventos do Mapa (clique, coordenadas do cursor)
+    // 6. Configurar Eventos do Mapa (clique, coordenadas do cursor)
     this.setupMapEvents();
+
+    // 7. Forçar recalculo de dimensões para preenchimento de 100% da viewport
+    this.invalidateSizeMultiple();
+
+    window.addEventListener('resize', () => {
+      if (this.map) this.map.invalidateSize();
+    });
+
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => { if (this.map) this.map.invalidateSize(); }, 300);
+    });
 
     console.log('[MapEngine] Inicializado com sucesso.');
   }
 
+  invalidateSizeMultiple() {
+    if (!this.map) return;
+    this.map.invalidateSize();
+    setTimeout(() => { if (this.map) this.map.invalidateSize(); }, 150);
+    setTimeout(() => { if (this.map) this.map.invalidateSize(); }, 500);
+    setTimeout(() => { if (this.map) this.map.invalidateSize(); }, 1200);
+  }
+
   setupBaseLayers() {
-    // Esri World Imagery (Satélite)
-    this.baseLayers['satellite'] = L.tileLayer('https://server.arcgisonline.com/ArcArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    // Esri World Imagery (Satélite de Alta Resolução Global)
+    this.baseLayers['satellite'] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 19,
-      attribution: 'Tiles &copy; Esri'
+      maxNativeZoom: 18,
+      attribution: 'Tiles &copy; Esri World Imagery'
+    });
+
+    // Google Satélite Híbrido (Satélite com Ruas e Nomes)
+    this.baseLayers['google'] = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      attribution: '&copy; Google Maps'
     });
 
     // CartoDB Dark Matter (Contraste escuro de alta legibilidade)
     this.baseLayers['dark'] = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
+      subdomains: 'abcd',
       attribution: '&copy; CartoDB'
     });
 
     // OpenStreetMap
-    this.baseLayers['osm'] = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    this.baseLayers['osm'] = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '&copy; OpenStreetMap'
     });
 
-    // Ativa Satélite por padrão
+    // Ativa Satélite Esri por padrão
     this.baseLayers['satellite'].addTo(this.map);
   }
 
@@ -83,11 +115,8 @@ class MapEngine {
 
     if (this.baseLayers[type]) {
       this.baseLayers[type].addTo(this.map);
-      // Assegurar que Sentinel e vetores fiquem acima
-      if (window.sentinelManager && window.sentinelManager.tileLayer) {
-        window.sentinelManager.tileLayer.bringToBack();
-      }
     }
+    this.invalidateSizeMultiple();
   }
 
   async loadConservationUnits() {
