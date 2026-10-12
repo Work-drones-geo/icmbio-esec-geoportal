@@ -1,0 +1,63 @@
+{
+  "type": "FeatureCollection",
+  "name": "Ocorrências de Fiscalização - Esec Guanabara & APA Guapimirim",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "occ-2026-001",
+      "properties": {
+        "id": "occ-2026-001",
+        "tipo": "Supressão de Manguezal",
+        "gravidade": "Alta",
+        "descricao": "Corte raso de vegetação de mangue preto (Avicennia schaueriana) com indícios de aterro recente próximo ao canal.",
+        "fiscal": "Fiscal Eduardo Santos (ICMBio)",
+        "data_hora": "2026-08-14T10:35:00Z",
+        "precisao_gps": 4.2,
+        "status": "Em Investigação",
+        "foto": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-43.0482, -22.7156]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "occ-2026-002",
+      "properties": {
+        "id": "occ-2026-002",
+        "tipo": "Construção Irregular",
+        "gravidade": "Média",
+        "descricao": "Cercamento não autorizado e fundação de alvenaria em Zona de Amortecimento da UC.",
+        "fiscal": "Fiscal Mariana Souza (ICMBio)",
+        "data_hora": "2026-08-22T14:15:00Z",
+        "precisao_gps": 5.0,
+        "status": "Notificado",
+        "foto": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-43.0125, -22.6984]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "occ-2026-003",
+      "properties": {
+        "id": "occ-2026-003",
+        "tipo": "Descarte de Resíduos",
+        "gravidade": "Média",
+        "descricao": "Deposição irregular de entulhos de construção e plásticos na margem estuarina do Rio Guapi-Mirim.",
+        "fiscal": "Fiscal Roberto Lima (ICMBio)",
+        "data_hora": "2026-09-05T09:20:00Z",
+        "precisao_gps": 3.8,
+        "status": "Concluído",
+        "foto": ""
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-43.0671, -22.7341]
+      }
+    }
+  ]
+}

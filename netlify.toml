@@ -1,0 +1,58 @@
+# Configuração de Deploy e Otimização para Netlify
+# Work Drones Geo • ICMBio WebGIS
+
+[build]
+  publish = "."
+
+# Service Worker nunca deve ficar preso em cache de longo prazo
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "max-age=0, no-cache, no-store, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+# Manifesto PWA
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
+
+# Dados GeoJSON e Catálogos
+[[headers]]
+  for = "/data/*.geojson"
+  [headers.values]
+    Content-Type = "application/geo+json; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=60"
+
+[[headers]]
+  for = "/data/*.json"
+  [headers.values]
+    Content-Type = "application/json; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
+
+# Assets estáticos (imagens, ícones e fontes) com cache longo
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/lib/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Headers de Segurança Global
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"

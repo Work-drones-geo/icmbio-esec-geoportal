@@ -1,0 +1,33 @@
+{
+  "name": "ICMBio GeoPortal • Work Drones Geo",
+  "short_name": "GeoPortal Esec",
+  "description": "WebGIS PWA de Alta Performance para Gestão e Fiscalização da Esec da Guanabara e APA Guapimirim",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#132A13",
+  "theme_color": "#132A13",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity", "navigation"]
+}

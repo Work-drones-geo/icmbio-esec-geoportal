@@ -1,0 +1,8 @@
+# Sistema e Logs
+.DS_Store
+Thumbs.db
+*.log
+
+# Scripts de teste locais descartáveis
+scripts/__pycache__/
+*.pyc

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ICMBio WebGIS • Work Drones Geo (Esec Guanabara & APA Guapimirim)</title>
+
+  <!-- PWA & Mobile Meta Tags -->
+  <meta name="theme-color" content="#132A13">
+  <meta name="description" content="WebGIS PWA de Alta Performance para Fiscalização e Monitoramento Ambiental da Esec Guanabara e APA Guapimirim com Imagens Sentinel-2 e Sincronização GitHub.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GeoPortal Esec">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+
+  <!-- Leaflet Local CSS -->
+  <link rel="stylesheet" href="lib/leaflet/leaflet.css">
+
+  <!-- Custom Stylesheet (Design System Work Drones Geo) -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="app-container">
+
+    <!-- Top Navigation Bar -->
+    <header id="top-nav">
+      <div class="nav-brand-left">
+        <button id="btn-toggle-sidebar" class="btn-icon" title="Menu e Camadas" aria-label="Abrir Menu">
+          ☰
+        </button>
+        <div class="brand-text-box">
+          <div class="brand-title">WORK DRONES <span>GEO</span></div>
+          <div class="brand-subtitle">ICMBIO • ESEC GUANABARA &amp; APA GUAPIMIRIM</div>
+        </div>
+      </div>
+
+      <div class="nav-actions-right">
+        <!-- Indicador de Rede Online/Offline -->
+        <div id="network-badge" class="status-badge status-online">
+          <span id="network-dot" class="dot"></span>
+          <span id="network-text">ONLINE</span>
+        </div>
+
+        <!-- Botão de Instalação PWA -->
+        <button id="btn-pwa-install" class="btn-install" title="Instalar aplicativo no celular">
+          📲 Instalar App
+        </button>
+      </div>
+    </header>
+
+    <!-- Sidebar Backdrop para Mobile -->
+    <div id="sidebar-backdrop"></div>
+
+    <!-- Drawer Lateral (Sidebar) -->
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <img src="assets/logo_workdrones.svg" alt="Work Drones Geo Logo" class="sidebar-logo">
+        <button id="btn-close-sidebar" class="btn-icon" style="width: 32px; height: 32px;" title="Fechar Menu">✕</button>
+      </div>
+
+      <!-- Abas de Navegação -->
+      <nav class="sidebar-tabs">
+        <button class="sidebar-tab-btn active" data-tab="sentinel">
+          <span class="tab-icon">🛰️</span>
+          <span>Satélite</span>
+        </button>
+        <button class="sidebar-tab-btn" data-tab="fiscalizacao">
+          <span class="tab-icon">📋</span>
+          <span>Fiscalização</span>
+          <span id="occ-count-badge" class="badge-pill">0</span>
+        </button>
+        <button class="sidebar-tab-btn" data-tab="ferramentas">
+          <span class="tab-icon">📐</span>
+          <span>GIS Tools</span>
+        </button>
+        <button class="sidebar-tab-btn" data-tab="github">
+          <span class="tab-icon">🐙</span>
+          <span>GitHub</span>
+          <span id="sync-pending-count" class="badge-pill" style="display:none; background: #F4A261;">0</span>
+        </button>
+      </nav>
+
+      <!-- Conteúdo das Abas -->
+      <div class="sidebar-content">
+
+        <!-- ABA 1: SATÉLITE SENTINEL-2 & CAMADAS -->
+        <section id="tab-sentinel" class="tab-content active">
+          
+          <div class="panel-section">
+            <div class="section-title">
+              <span>Sentinel-2 L2A (Estiagem)</span>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 11px; text-transform: none; cursor: pointer;">
+                <input type="checkbox" id="check-sentinel-visible" checked> Exibir
+              </label>
+            </div>
+
+            <!-- Seletor de Ano -->
+            <label class="form-label">Série Temporal (Mai-Ago, Nuvens &lt; 1%):</label>
+            <div class="year-selector-grid">
+              <button class="btn-year" data-year="2023">2023</button>
+              <button class="btn-year" data-year="2024">2024</button>
+              <button class="btn-year" data-year="2025">2025</button>
+              <button class="btn-year active" data-year="2026">2026</button>
+            </div>
+
+            <!-- Seletor de Modo -->
+            <label class="form-label">Modo Espectral de Análise:</label>
+            <div class="mode-toggle-group">
+              <button class="btn-mode active" data-mode="rgb">🌿 Cor Verdadeira (TCI/RGB)</button>
+              <button class="btn-mode" data-mode="ndvi">🌱 NDVI (Vegetação)</button>
+            </div>
+
+            <!-- Controle de Opacidade -->
+            <div class="slider-control-group">
+              <div class="slider-label-row">
+                <span>Transparência da Camada:</span>
+                <span id="sentinel-opacity-val">95%</span>
+              </div>
+              <input type="range" id="sentinel-opacity-slider" class="range-slider" min="0" max="1" step="0.05" value="0.95">
+            </div>
+
+            <!-- Metadados da Cena -->
+            <div class="scene-meta-box">
+              <div class="meta-row">
+                <span class="meta-label">Ano Selecionado:</span>
+                <span class="meta-val" id="scene-info-year">2026</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Data de Passagem:</span>
+                <span class="meta-val" id="scene-info-date">2026-08-20</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Cobertura de Nuvens:</span>
+                <span class="meta-val" id="scene-info-clouds" style="color: #52B788;">0.34%</span>
+              </div>
+              <div class="meta-row">
+                <span class="meta-label">Sensor:</span>
+                <span class="meta-val" id="scene-info-sat">Sentinel-2C (MSI L2A)</span>
+              </div>
+            </div>
+
+            <!-- Legenda Dinâmica de NDVI -->
+            <div id="ndvi-legend-container" class="ndvi-legend" style="display: none;">
+              <span class="form-label" style="margin-bottom: 4px;">Legenda NDVI (Manguezais da Baía):</span>
+              <div class="ndvi-bar"></div>
+              <div class="ndvi-classes-list">
+                <div class="ndvi-class-item">
+                  <span class="ndvi-swatch" style="background: #a50026;"></span>
+                  <span><strong>&lt; 0.0:</strong> Água, Canais de Maré, Lama Estuarina</span>
+                </div>
+                <div class="ndvi-class-item">
+                  <span class="ndvi-swatch" style="background: #fee08b;"></span>
+                  <span><strong>0.0 a 0.2:</strong> Solo Exposto, Aterro, Supressão Recente</span>
+                </div>
+                <div class="ndvi-class-item">
+                  <span class="ndvi-swatch" style="background: #a6d96a;"></span>
+                  <span><strong>0.2 a 0.45:</strong> Regeneração Inicial / Vegetação Herbácea</span>
+                </div>
+                <div class="ndvi-class-item">
+                  <span class="ndvi-swatch" style="background: #006837;"></span>
+                  <span><strong>&gt; 0.45:</strong> Manguezal Denso / Mata de Restinga Preservada</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Unidades de Conservação e Atalhos -->
+          <div class="panel-section">
+            <div class="section-title">Unidades de Conservação (ICMBio)</div>
+            <p style="font-size: 11.5px; color: var(--color-text-muted); margin-bottom: 8px;">
+              Clique para enquadrar a área de patrulhamento:
+            </p>
+            <div class="uc-nav-btns">
+              <button id="btn-zoom-esec" class="btn-secondary">🔎 ESEC Guanabara</button>
+              <button id="btn-zoom-apa" class="btn-secondary">🔎 APA Guapimirim</button>
+            </div>
+            <button id="btn-zoom-all" class="btn-secondary" style="width: 100%; margin-top: 8px;">
+              🌐 Visão Ampla da Baía de Guanabara
+            </button>
+          </div>
+
+          <!-- Mapa Base -->
+          <div class="panel-section">
+            <div class="section-title">Mapa Base de Referência</div>
+            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="basemap-radio" value="satellite" checked> Satélite Esri World Imagery
+              </label>
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="basemap-radio" value="dark"> CartoDB Dark Matter (Alto Contraste)
+              </label>
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <input type="radio" name="basemap-radio" value="osm"> OpenStreetMap Padrão
+              </label>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ABA 2: FISCALIZAÇÃO & OCORRÊNCIAS -->
+        <section id="tab-fiscalizacao" class="tab-content">
+          <div class="panel-section">
+            <div class="section-title">Patrulhamento &amp; Ocorrências</div>
+            <p style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 12px;">
+              Registre infrações ou vistorias de campo. Os pontos são salvos no celular e sincronizados automaticamente com o GitHub.
+            </p>
+            
+            <button class="btn-primary" style="width: 100%; margin-bottom: 12px;" onclick="document.getElementById('btn-add-occurrence-fab').click();">
+              ➕ Nova Intercorrência de Campo
+            </button>
+
+            <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 12px;">
+              <span class="form-label">Exportar Dados para Relatório / Backup:</span>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                <button id="btn-exp-geojson" class="btn-secondary">📥 Baixar GeoJSON Completo</button>
+                <button id="btn-exp-kml" class="btn-secondary">📥 Baixar KML (Google Earth / Litchi)</button>
+                <button id="btn-exp-csv" class="btn-secondary">📥 Baixar Tabela CSV (Planilhas)</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ABA 3: FERRAMENTAS GIS -->
+        <section id="tab-ferramentas" class="tab-content">
+          <div class="panel-section">
+            <div class="section-title">Calculadora de Coordenadas</div>
+            <p style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 10px;">
+              Conversão instantânea WGS84 para o referencial oficial do ICMBio (SIRGAS 2000 UTM Fuso 23S):
+            </p>
+            <div class="form-group">
+              <label class="form-label">Latitude Decimal:</label>
+              <input type="number" step="any" id="calc-lat" class="form-control" placeholder="-22.7209" value="-22.720949">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Longitude Decimal:</label>
+              <input type="number" step="any" id="calc-lon" class="form-control" placeholder="-43.0315" value="-43.031579">
+            </div>
+            <button class="btn-secondary" style="width: 100%; margin-bottom: 12px;" onclick="
+              const lat = parseFloat(document.getElementById('calc-lat').value);
+              const lon = parseFloat(document.getElementById('calc-lon').value);
+              if (!isNaN(lat) && !isNaN(lon)) {
+                const res = window.mapEngine.latLonToUtm23S(lat, lon);
+                document.getElementById('calc-utm-result').textContent = `E: ${res.easting.toFixed(2)}m | N: ${res.northing.toFixed(2)}m (UTM 23S)`;
+              }
+            ">Calcular UTM 23S</button>
+            <div id="calc-utm-result" style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--color-accent); text-align: center; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">
+              Clique no botão para converter
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <div class="section-title">Sobre as Unidades de Conservação</div>
+            <div style="font-size: 11.5px; line-height: 1.5; color: var(--color-text-muted);">
+              <p><strong>ESEC da Guanabara:</strong> Criada pelo Decreto nº 98.961/1990 com ~1.935 ha. Área de proteção integral essencial para reprodução da ictiofauna e aves marinhas.</p>
+              <br>
+              <p><strong>APA de Guapimirim:</strong> Criada pelo Decreto nº 90.225/1984 com ~13.926 ha. Amortece os impactos da baía e apoia a comunidade tradicional de catadores de caranguejo.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ABA 4: CONFIGURAÇÃO DO GITHUB SYNC -->
+        <section id="tab-github" class="tab-content">
+          <div class="panel-section">
+            <div class="section-title">Sincronização com GitHub</div>
+            <p style="font-size: 11.5px; color: var(--color-text-muted); margin-bottom: 10px;">
+              Permite que o WebGIS salve as ocorrências diretamente no repositório GitHub através de commits automáticos, dispensando bancos de dados pagos.
+            </p>
+
+            <div id="gh-status-indicator" style="font-size: 12px; margin-bottom: 12px;">
+              <!-- Status inserido via JS -->
+            </div>
+
+            <button id="btn-open-github-modal" class="btn-secondary" style="width: 100%; margin-bottom: 10px;">
+              ⚙️ Configurar Token e Repositório
+            </button>
+
+            <button id="btn-sync-queue" class="btn-primary" style="width: 100%;">
+              🔄 Sincronizar Fila de Campo Agora
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </aside>
+
+    <!-- Mapa Principal (Leaflet) -->
+    <main id="map"></main>
+
+    <!-- HUD de Telemetria GPS em Tempo Real -->
+    <div id="gps-telemetry-hud">
+      <div class="hud-header">
+        <span id="gps-hud-status">GPS Inativo</span>
+        <span id="footer-cursor-coords">-22.7209°, -43.0315°</span>
+      </div>
+      <div class="hud-grid">
+        <div class="hud-item">
+          <span class="hud-label">COORDENADAS (WGS84):</span>
+          <span class="hud-value" id="gps-hud-coords">Aguardando sinal...</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">PRECISÃO ESTIMADA:</span>
+          <span class="hud-value" id="gps-hud-acc">-- m</span>
+        </div>
+        <div class="hud-item" style="grid-column: span 2;">
+          <span class="hud-label">PROJEÇÃO CARTOGRÁFICA OFICIAL:</span>
+          <span class="hud-value" id="gps-hud-utm">SIRGAS 2000 UTM 23S</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botões de Ação Flutuante (FABs) -->
+    <div class="fab-container">
+      <!-- Botão GPS Rastreamento -->
+      <button id="btn-gps-track" class="fab-btn" title="Rastreamento GPS em Tempo Real" aria-label="Ativar GPS">
+        🧭
+      </button>
+
+      <!-- Botão Nova Ocorrência Rápida -->
+      <button id="btn-add-occurrence-fab" class="fab-btn fab-add" title="Registrar Nova Ocorrência de Campo" aria-label="Nova Ocorrência">
+        ➕
+      </button>
+    </div>
+
+    <!-- Contêiner de Toasts de Notificação -->
+    <div id="toast-container"></div>
+
+    <!-- MODAL: REGISTRO DE OCORRÊNCIA -->
+    <div id="modal-occurrence" class="modal-backdrop">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">📋 Registrar Ocorrência de Campo</h3>
+          <button id="btn-close-occ-modal" class="btn-icon" style="width: 30px; height: 30px;">✕</button>
+        </div>
+        <form id="form-occurrence">
+          <div class="modal-body">
+
+            <div class="form-group">
+              <label class="form-label" for="occ-type">Tipo de Intercorrência *</label>
+              <select id="occ-type" class="form-control" required>
+                <option value="Supressão de Manguezal">🪓 Supressão de Manguezal / Desmatamento</option>
+                <option value="Construção Irregular">🏗️ Construção Irregular / Invasão</option>
+                <option value="Descarte de Resíduos">🗑️ Descarte Irregular de Resíduos / Lixo</option>
+                <option value="Queimada">🔥 Queimada / Foco de Incêndio</option>
+                <option value="Pesca / Caça Predatória Ilegal">🎣 Pesca ou Caça Predatória Ilegal</option>
+                <option value="Poluição Hídrica">☣️ Poluição Hídrica / Óleo / Efluentes</option>
+                <option value="Outros">⚠️ Outros Danos Ambientais</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="occ-severity">Gravidade *</label>
+                <select id="occ-severity" class="form-control">
+                  <option value="Baixa">Baixa</option>
+                  <option value="Média" selected>Média</option>
+                  <option value="Alta">Alta</option>
+                  <option value="Crítica">Crítica (Urgência)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="occ-fiscal">Fiscal / Matrícula *</label>
+                <input type="text" id="occ-fiscal" class="form-control" placeholder="Nome do Fiscal" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Latitude</label>
+                <input type="text" id="occ-lat" class="form-control" readonly>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Longitude</label>
+                <input type="text" id="occ-lon" class="form-control" readonly>
+              </div>
+            </div>
+            <input type="hidden" id="occ-accuracy">
+
+            <div class="form-group">
+              <label class="form-label" for="occ-desc">Descrição Detalhada do Fato *</label>
+              <textarea id="occ-desc" class="form-control" rows="3" placeholder="Descreva os danos observados, espécies impactadas, maquinário ou suspeitos..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Registro Fotográfico (Câmera do Celular)</label>
+              <label class="photo-capture-box" for="occ-photo">
+                <div style="font-size: 24px; margin-bottom: 4px;">📷</div>
+                <div style="font-size: 12px; font-weight: 700; color: var(--color-accent);">Tirar Foto ou Selecionar Arquivo</div>
+                <div style="font-size: 10px; color: var(--color-text-muted);">Comprime automaticamente para transmissão rápida</div>
+                <input type="file" id="occ-photo" accept="image/*" capture="environment" style="display: none;">
+              </label>
+              <img id="photo-preview" alt="Prévia da foto" style="display: none;">
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="btn-cancel-occ-modal" class="btn-secondary">Cancelar</button>
+            <button type="submit" id="btn-submit-occ" class="btn-primary">
+              <span>Salvar &amp; Transmitir Ocorrência</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: CONFIGURAÇÃO DO GITHUB -->
+    <div id="modal-github" class="modal-backdrop">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">⚙️ Integração com GitHub</h3>
+          <button id="btn-close-github-modal" class="btn-icon" style="width: 30px; height: 30px;">✕</button>
+        </div>
+        <form id="form-github-config">
+          <div class="modal-body">
+            <p style="font-size: 11.5px; color: var(--color-text-muted); margin-bottom: 12px;">
+              Insira o token de acesso pessoal (PAT) com permissão de escrita em repositório (Contents: Read and Write). As credenciais ficam salvas exclusivamente no navegador deste aparelho.
+            </p>
+            <div class="form-group">
+              <label class="form-label" for="gh-repo">Repositório GitHub (usuario/repo) *</label>
+              <input type="text" id="gh-repo" class="form-control" placeholder="ex: WorkDronesGeo/icmbio-esec-geoportal" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="gh-token">GitHub Personal Access Token (PAT) *</label>
+              <input type="password" id="gh-token" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="gh-branch">Branch</label>
+              <input type="text" id="gh-branch" class="form-control" value="main">
+            </div>
+            <button type="button" id="btn-test-github" class="btn-secondary" style="width: 100%;">
+              Testar Conexão
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn-primary">Salvar Configurações</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="lib/leaflet/leaflet.js"></script>
+  <script src="js/offline-store.js"></script>
+  <script src="js/github-sync.js"></script>
+  <script src="js/sentinel.js"></script>
+  <script src="js/occurrences.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gradBrand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#52B788" />
+      <stop offset="100%" stop-color="#74C69D" />
+    </linearGradient>
+    <linearGradient id="gradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1B4332" />
+      <stop offset="100%" stop-color="#081C15" />
+    </linearGradient>
+  </defs>
+  <!-- Background Badge -->
+  <rect x="5" y="10" width="80" height="80" rx="16" fill="url(#gradDark)" stroke="#52B788" stroke-width="2"/>
+  
+  <!-- Stylized Drone + Geo Icon -->
+  <circle cx="45" cy="50" r="10" fill="#52B788"/>
+  <circle cx="45" cy="50" r="4" fill="#081C15"/>
+  <!-- Drone Arms -->
+  <line x1="25" y1="30" x2="65" y2="70" stroke="#74C69D" stroke-width="3" stroke-linecap="round"/>
+  <line x1="65" y1="30" x2="25" y2="70" stroke="#74C69D" stroke-width="3" stroke-linecap="round"/>
+  <!-- Rotors -->
+  <circle cx="25" cy="30" r="7" fill="none" stroke="#52B788" stroke-width="2.5"/>
+  <circle cx="65" cy="30" r="7" fill="none" stroke="#52B788" stroke-width="2.5"/>
+  <circle cx="25" cy="70" r="7" fill="none" stroke="#52B788" stroke-width="2.5"/>
+  <circle cx="65" cy="70" r="7" fill="none" stroke="#52B788" stroke-width="2.5"/>
+  <!-- Geo Coordinates Arc -->
+  <path d="M 18 50 A 27 27 0 0 1 72 50" fill="none" stroke="#D8F3DC" stroke-width="1.5" stroke-dasharray="2,3"/>
+
+  <!-- Brand Typography -->
+  <text x="100" y="44" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="900" fill="#FFFFFF" letter-spacing="0.5">WORK DRONES</text>
+  <text x="282" y="44" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="900" fill="#52B788" letter-spacing="1">GEO</text>
+  <text x="100" y="68" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="11.5" font-weight="600" fill="#B7E4C7" letter-spacing="2">ICMBIO • ESEC GUANABARA &amp; APA GUAPIMIRIM</text>
+</svg>

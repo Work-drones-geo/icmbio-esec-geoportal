@@ -1,0 +1,62 @@
+{
+  "2023": {
+    "year": 2023,
+    "scene_id": "S2B_MSIL2A_20230811T130249_R095_T23KQQ_20240911T210930",
+    "date": "2023-08-11",
+    "cloud_cover": 0.01,
+    "satellite": "Sentinel-2 L2A",
+    "tile_rgb": "https://planetarycomputer.microsoft.com/api/data/v1/item/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&item=S2B_MSIL2A_20230811T130249_R095_T23KQQ_20240911T210930&assets=visual",
+    "tile_ndvi": "https://planetarycomputer.microsoft.com/api/data/v1/item/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&item=S2B_MSIL2A_20230811T130249_R095_T23KQQ_20240911T210930&assets=B08&assets=B04&expression=%28B08_b1-B04_b1%29%2F%28B08_b1%2BB04_b1%29&rescale=-0.1%2C0.85&colormap_name=rdylgn",
+    "bounds": [
+      -43.0548438,
+      -23.5859937,
+      -41.9655129,
+      -22.5782341
+    ]
+  },
+  "2024": {
+    "year": 2024,
+    "scene_id": "S2B_MSIL2A_20240815T130249_R095_T23KQR_20240815T140854",
+    "date": "2024-08-15",
+    "cloud_cover": 0.13,
+    "satellite": "Sentinel-2 L2A",
+    "tile_rgb": "https://planetarycomputer.microsoft.com/api/data/v1/item/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&item=S2B_MSIL2A_20240815T130249_R095_T23KQR_20240815T140854&assets=visual",
+    "tile_ndvi": "https://planetarycomputer.microsoft.com/api/data/v1/item/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&item=S2B_MSIL2A_20240815T130249_R095_T23KQR_20240815T140854&assets=B08&assets=B04&expression=%28B08_b1-B04_b1%29%2F%28B08_b1%2BB04_b1%29&rescale=-0.1%2C0.85&colormap_name=rdylgn",
+    "bounds": [
+      -43.067207,
+      -22.6835528,
+      -41.9857365,
+      -21.6763989
+    ]
+  },
+  "2025": {
+    "year": 2025,
+    "scene_id": "S2C_MSIL2A_20250716T130311_R095_T23KQQ_20250716T173813",
+    "date": "2025-07-16",
+    "cloud_cover": 0.9,
+    "satellite": "Sentinel-2 L2A",
+    "tile_rgb": "https://planetarycomputer.microsoft.com/api/data/v1/item/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&item=S2C_MSIL2A_20250716T130311_R095_T23KQQ_20250716T173813&assets=visual",
+    "tile_ndvi": "https://planetarycomputer.microsoft.com/api/data/v1/item/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&item=S2C_MSIL2A_20250716T130311_R095_T23KQQ_20250716T173813&assets=B08&assets=B04&expression=%28B08_b1-B04_b1%29%2F%28B08_b1%2BB04_b1%29&rescale=-0.1%2C0.85&colormap_name=rdylgn",
+    "bounds": [
+      -43.0548438,
+      -23.5859937,
+      -41.9655129,
+      -22.5782341
+    ]
+  },
+  "2026": {
+    "year": 2026,
+    "scene_id": "S2C_MSIL2A_20260820T130241_R095_T23KQR_20260820T161808",
+    "date": "2026-08-20",
+    "cloud_cover": 0.34,
+    "satellite": "Sentinel-2 L2A",
+    "tile_rgb": "https://planetarycomputer.microsoft.com/api/data/v1/item/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&item=S2C_MSIL2A_20260820T130241_R095_T23KQR_20260820T161808&assets=visual",
+    "tile_ndvi": "https://planetarycomputer.microsoft.com/api/data/v1/item/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?collection=sentinel-2-l2a&item=S2C_MSIL2A_20260820T130241_R095_T23KQR_20260820T161808&assets=B08&assets=B04&expression=%28B08_b1-B04_b1%29%2F%28B08_b1%2BB04_b1%29&rescale=-0.1%2C0.85&colormap_name=rdylgn",
+    "bounds": [
+      -43.067207,
+      -22.6835528,
+      -41.9857365,
+      -21.6763989
+    ]
+  }
+}
