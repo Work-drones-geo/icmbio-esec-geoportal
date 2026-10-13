@@ -1,30 +1,38 @@
 /* ==========================================================================
-   WORK DRONES GEO • DESIGN SYSTEM & WEBGIS STYLESHEET
+   WORK DRONES GEO • DESIGN SYSTEM LIMPO & WEBGIS STYLESHEET
    ICMBio: Estação Ecológica da Guanabara & APA de Guapimirim
+   Identidade: Fundo Claro/Branco | Texto #0B251B | Detalhes #52B788
    ========================================================================== */
 
 :root {
-  --color-bg-darkest: #081C15;
-  --color-bg-sidebar: #132A13;
-  --color-primary: #1B4332;
-  --color-primary-light: #2D6A4F;
-  --color-primary-hover: #40916C;
-  --color-accent: #52B788;
-  --color-accent-light: #74C69D;
-  --color-accent-pale: #D8F3DC;
+  /* Cores Principais da Marca */
+  --color-bg-base: #FFFFFF;
+  --color-bg-subtle: #F8FAF9;
+  --color-bg-card: #F4F8F6;
+  --color-bg-card-hover: #EBF3EF;
   
-  --color-text-main: #FFFFFF;
-  --color-text-muted: #B7E4C7;
-  --color-text-dim: #74C69D;
+  --color-text-main: #0B251B;       /* Verde-escuro profundo */
+  --color-text-muted: #2D5A46;      /* Verde intermediário legível */
+  --color-text-dim: #557567;        /* Verde suave para legendas e apoios */
   
-  --color-danger: #E63946;
-  --color-warning: #F4A261;
+  --color-accent: #52B788;          /* Verde folha de destaque */
+  --color-accent-hover: #40916C;    /* Verde folha escuro hover */
+  --color-accent-light: #74C69D;    /* Verde claro */
+  --color-accent-pale: #E8F5EE;     /* Fundo verde sutil */
+  
+  --color-border: #DDE8E2;          /* Borda suave */
+  --color-border-accent: rgba(82, 183, 136, 0.4);
+  
+  /* Cores de Alerta */
+  --color-danger: #D9383A;
+  --color-warning: #E07A2B;
   --color-info: #2A9D8F;
-  
-  --glass-bg: rgba(19, 42, 19, 0.90);
-  --glass-border: rgba(82, 183, 136, 0.25);
-  --glass-blur: blur(12px);
+  --color-success: #2D8A56;
 
+  /* Opacidade e Painéis */
+  --sidebar-opacity: 0.96;
+  --color-bg-sidebar-rgb: 255, 255, 255;
+  
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   
@@ -50,7 +58,7 @@ html, body {
   height: 100%;
   overflow: hidden;
   font-family: var(--font-family);
-  background-color: var(--color-bg-darkest);
+  background-color: var(--color-bg-base);
   color: var(--color-text-main);
   user-select: none;
 }
@@ -60,11 +68,12 @@ html, body {
    ========================================================================== */
 
 #app-container {
-  display: flex;
+  display: block;
   width: 100vw;
   height: 100vh;
   position: relative;
   overflow: hidden;
+  background-color: #E8F0EC;
 }
 
 /* ==========================================================================
@@ -82,10 +91,10 @@ html, body {
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  background: rgba(19, 42, 19, 0.95);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--color-border);
   border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 4px 18px rgba(11, 37, 27, 0.08);
   pointer-events: auto;
 }
 
@@ -96,23 +105,25 @@ html, body {
 }
 
 .btn-icon {
-  width: 42px;
-  height: 42px;
-  background: rgba(82, 183, 136, 0.15);
-  border: 1px solid var(--glass-border);
-  color: var(--color-accent);
+  width: 40px;
+  height: 40px;
+  background: var(--color-accent-pale);
+  border: 1px solid var(--color-border-accent);
+  color: var(--color-text-main);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 19px;
+  font-weight: 700;
   transition: all 0.2s ease;
 }
 
 .btn-icon:hover, .btn-icon:active {
   background: var(--color-accent);
-  color: var(--color-bg-darkest);
+  color: #FFFFFF;
+  border-color: var(--color-accent);
 }
 
 .brand-text-box {
@@ -122,9 +133,9 @@ html, body {
 
 .brand-title {
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.5px;
-  color: #FFFFFF;
+  color: var(--color-text-main);
 }
 
 .brand-title span {
@@ -134,8 +145,8 @@ html, body {
 .brand-subtitle {
   font-size: 10px;
   color: var(--color-text-muted);
-  font-weight: 600;
-  letter-spacing: 0.5px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
 }
 
 .nav-actions-right {
@@ -151,32 +162,32 @@ html, body {
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.5px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .status-badge .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  box-shadow: 0 0 8px currentColor;
+  box-shadow: 0 0 6px currentColor;
 }
 
 .status-online {
-  color: var(--color-accent);
-  border-color: rgba(82, 183, 136, 0.3);
+  background: #E8F5EE;
+  color: var(--color-text-main);
+  border: 1px solid var(--color-accent);
 }
 
 .status-offline {
+  background: #FFF3E0;
   color: var(--color-warning);
-  border-color: rgba(244, 162, 97, 0.4);
+  border: 1px solid #F4A261;
 }
 
 .btn-install {
   background: var(--color-accent);
-  color: var(--color-bg-darkest);
+  color: #FFFFFF;
   border: none;
   padding: 6px 12px;
   border-radius: 8px;
@@ -186,10 +197,15 @@ html, body {
   display: none;
   align-items: center;
   gap: 6px;
+  transition: background 0.2s;
+}
+
+.btn-install:hover {
+  background: var(--color-accent-hover);
 }
 
 /* ==========================================================================
-   SIDEBAR (PAINEL LATERAL & DRAWER RESPONSIVO)
+   SIDEBAR (PAINEL LATERAL COM FUNDO CLARO E ALTA LEGIBILIDADE)
    ========================================================================== */
 
 #sidebar-backdrop {
@@ -217,36 +233,17 @@ html, body {
   max-width: 90vw;
   height: 100vh;
   z-index: var(--z-sidebar);
-  background: rgba(19, 42, 19, var(--sidebar-opacity, 0.88));
+  background: rgba(var(--color-bg-sidebar-rgb), var(--sidebar-opacity, 0.96));
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  border-right: 1px solid var(--glass-border);
-  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.6);
+  border-right: 1px solid var(--color-border);
+  box-shadow: 6px 0 28px rgba(11, 37, 27, 0.10);
   display: flex;
   flex-direction: column;
   transform: translateX(-100%);
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease;
   overflow: hidden;
-}
-
-.sidebar-opacity-bar {
-  padding: 8px 16px;
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid var(--glass-border);
-}
-
-.sidebar-opacity-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-accent);
-  margin-bottom: 5px;
-}
-
-#panel-opacity-val {
-  color: #FFFFFF;
+  color: var(--color-text-main);
 }
 
 #sidebar.open {
@@ -255,8 +252,8 @@ html, body {
 
 .sidebar-header {
   padding: 16px;
-  border-bottom: 1px solid var(--glass-border);
-  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -268,11 +265,33 @@ html, body {
   max-width: 250px;
 }
 
+/* Controle de Opacidade/Transparência da Sidebar */
+.sidebar-opacity-bar {
+  padding: 8px 16px;
+  background: #F0F5F2;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.sidebar-opacity-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 5px;
+}
+
+#panel-opacity-val {
+  color: var(--color-accent-hover);
+  font-weight: 800;
+}
+
 /* Abas de Navegação na Sidebar */
 .sidebar-tabs {
   display: flex;
-  background: rgba(0, 0, 0, 0.35);
-  border-bottom: 1px solid var(--glass-border);
+  background: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .sidebar-tab-btn {
@@ -281,10 +300,10 @@ html, body {
   border: none;
   color: var(--color-text-muted);
   padding: 12px 6px;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11.5px;
+  font-weight: 800;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
+  border-bottom: 3px solid transparent;
   transition: all 0.2s ease;
   text-align: center;
   display: flex;
@@ -299,12 +318,13 @@ html, body {
 
 .sidebar-tab-btn:hover {
   color: var(--color-text-main);
+  background: var(--color-bg-card-hover);
 }
 
 .sidebar-tab-btn.active {
-  color: var(--color-accent);
+  color: var(--color-text-main);
   border-bottom-color: var(--color-accent);
-  background: rgba(82, 183, 136, 0.08);
+  background: var(--color-accent-pale);
 }
 
 .sidebar-tab-btn .badge-pill {
@@ -321,7 +341,8 @@ html, body {
   overflow-y: auto;
   padding: 16px;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-primary-light) transparent;
+  scrollbar-color: var(--color-accent) transparent;
+  background: transparent;
 }
 
 .tab-content {
@@ -340,17 +361,18 @@ html, body {
 
 /* Seções e Cards na Sidebar */
 .panel-section {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(82, 183, 136, 0.15);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 14px;
   margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(11, 37, 27, 0.03);
 }
 
 .section-title {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 800;
-  color: var(--color-accent);
+  color: var(--color-text-main);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   margin-bottom: 12px;
@@ -368,37 +390,38 @@ html, body {
 }
 
 .btn-year {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--glass-border);
-  color: var(--color-text-muted);
-  padding: 8px 4px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  padding: 9px 4px;
   border-radius: 8px;
   font-weight: 800;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(11, 37, 27, 0.05);
 }
 
 .btn-year:hover {
   border-color: var(--color-accent);
-  color: #fff;
+  color: var(--color-accent-hover);
 }
 
 .btn-year.active {
   background: var(--color-accent);
-  color: var(--color-bg-darkest);
+  color: #FFFFFF;
   border-color: var(--color-accent);
-  box-shadow: 0 0 12px rgba(82, 183, 136, 0.4);
+  box-shadow: 0 2px 8px rgba(82, 183, 136, 0.35);
 }
 
 /* Seletor de Modo (RGB vs NDVI) */
 .mode-toggle-group {
   display: flex;
-  background: rgba(0, 0, 0, 0.45);
+  background: #E8F0EC;
   border-radius: 8px;
   padding: 3px;
   margin-bottom: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border);
 }
 
 .btn-mode {
@@ -415,9 +438,10 @@ html, body {
 }
 
 .btn-mode.active {
-  background: var(--color-primary-light);
-  color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  background: #FFFFFF;
+  color: var(--color-text-main);
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(11, 37, 27, 0.08);
 }
 
 /* Controle de Opacidade */
@@ -428,8 +452,9 @@ html, body {
 .slider-label-row {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
-  color: var(--color-text-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-text-main);
   margin-bottom: 6px;
 }
 
@@ -443,12 +468,12 @@ html, body {
 
 /* Metadados da Cena */
 .scene-meta-box {
-  background: rgba(0, 0, 0, 0.3);
+  background: #FFFFFF;
   border-radius: 8px;
-  padding: 10px;
-  font-size: 11px;
+  padding: 10px 12px;
+  font-size: 11.5px;
   line-height: 1.6;
-  border: 1px dashed rgba(82, 183, 136, 0.2);
+  border: 1px solid var(--color-border);
 }
 
 .meta-row {
@@ -458,32 +483,35 @@ html, body {
 
 .meta-label {
   color: var(--color-text-muted);
+  font-weight: 600;
 }
 
 .meta-val {
-  font-weight: 700;
-  color: #fff;
+  font-weight: 800;
+  color: var(--color-text-main);
 }
 
 /* Legenda NDVI */
 .ndvi-legend {
   margin-top: 12px;
   padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--color-border);
 }
 
 .ndvi-bar {
   height: 12px;
   border-radius: 6px;
   background: linear-gradient(to right, #a50026, #f46d43, #fee08b, #a6d96a, #1a9850, #006837);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
 }
 
 .ndvi-classes-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 10.5px;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--color-text-main);
 }
 
 .ndvi-class-item {
@@ -497,9 +525,44 @@ html, body {
   height: 12px;
   border-radius: 3px;
   flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-/* Atalhos de Zoom de UCs */
+/* Toggles e Atalhos das UCs */
+.uc-layer-toggles-box {
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  margin-bottom: 8px;
+}
+
+.uc-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  user-select: none;
+}
+
+.legend-line {
+  display: inline-block;
+  width: 22px;
+  border-radius: 2px;
+}
+
+.line-esec {
+  height: 4px;
+  background-color: var(--color-accent);
+}
+
+.line-apa {
+  height: 0px;
+  border-bottom: 3px dashed var(--color-accent-light);
+}
+
 .uc-nav-btns {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -508,21 +571,42 @@ html, body {
 }
 
 .btn-secondary {
-  background: rgba(82, 183, 136, 0.12);
-  border: 1px solid var(--glass-border);
-  color: var(--color-accent-pale);
+  background: #FFFFFF;
+  border: 1px solid var(--color-accent);
+  color: var(--color-text-main);
   padding: 9px 12px;
   border-radius: 8px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
+  box-shadow: 0 1px 3px rgba(11, 37, 27, 0.05);
 }
 
 .btn-secondary:hover {
   background: var(--color-accent);
-  color: var(--color-bg-darkest);
+  color: #FFFFFF;
+  border-color: var(--color-accent);
+}
+
+.btn-primary {
+  background: var(--color-accent);
+  color: #FFFFFF;
+  border: 1px solid var(--color-accent);
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(82, 183, 136, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  transform: translateY(-1px);
 }
 
 /* ==========================================================================
@@ -538,11 +622,11 @@ html, body {
   width: 100%;
   height: 100%;
   z-index: var(--z-map);
-  background-color: #081C15;
+  background-color: #E8F0EC;
 }
 
 /* ==========================================================================
-   HUD DE TELEMETRIA GPS (INFORMAÇÕES EM TEMPO REAL)
+   HUD DE TELEMETRIA GPS (ALTA LEGIBILIDADE NO FUNDO BRANCO)
    ========================================================================== */
 
 #gps-telemetry-hud {
@@ -550,16 +634,16 @@ html, body {
   bottom: 24px;
   left: 16px;
   z-index: var(--z-hud);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 10px 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 18px rgba(11, 37, 27, 0.12);
   font-family: var(--font-mono);
   font-size: 11px;
   pointer-events: auto;
-  max-width: 320px;
+  max-width: 330px;
+  color: var(--color-text-main);
 }
 
 .hud-header {
@@ -568,11 +652,17 @@ html, body {
   justify-content: space-between;
   margin-bottom: 6px;
   font-family: var(--font-family);
-  font-weight: 800;
-  font-size: 10.5px;
-  color: var(--color-accent);
+  font-weight: 900;
+  font-size: 11px;
+  color: var(--color-text-main);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 4px;
+}
+
+#gps-hud-status {
+  color: var(--color-accent-hover);
 }
 
 .hud-grid {
@@ -588,17 +678,18 @@ html, body {
 
 .hud-label {
   font-size: 9px;
-  color: var(--color-text-muted);
+  font-weight: 700;
+  color: var(--color-text-dim);
 }
 
 .hud-value {
-  font-weight: 700;
-  color: #fff;
+  font-weight: 800;
+  color: var(--color-text-main);
   white-space: nowrap;
 }
 
 /* ==========================================================================
-   BOTÕES DE AÇÃO FLUTUANTE (FABs)
+   BOTÕES DE AÇÃO FLUTUANTE (FABs COM ESTILO LIMPO)
    ========================================================================== */
 
 .fab-container {
@@ -615,26 +706,27 @@ html, body {
   width: 52px;
   height: 52px;
   border-radius: 26px;
-  background: var(--color-bg-sidebar);
+  background: #FFFFFF;
   border: 2px solid var(--color-accent);
-  color: #fff;
+  color: var(--color-text-main);
   font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 16px rgba(11, 37, 27, 0.15);
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .fab-btn:hover {
   transform: scale(1.08);
+  box-shadow: 0 6px 22px rgba(11, 37, 27, 0.20);
 }
 
 .fab-btn.tracking-active {
   background: var(--color-accent);
-  color: var(--color-bg-darkest);
-  border-color: #fff;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
   box-shadow: 0 0 20px rgba(82, 183, 136, 0.8);
   animation: pulseTracking 2s infinite;
 }
@@ -646,14 +738,14 @@ html, body {
 }
 
 .fab-add {
-  background: linear-gradient(135deg, #1B4332, #2D6A4F);
+  background: var(--color-accent);
   border: 2px solid var(--color-accent);
-  color: var(--color-accent);
+  color: #FFFFFF;
 }
 
 .fab-add:hover {
-  background: var(--color-accent);
-  color: var(--color-bg-darkest);
+  background: var(--color-accent-hover);
+  color: #FFFFFF;
 }
 
 /* Pulse do GPS no Mapa */
@@ -673,9 +765,9 @@ html, body {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #52B788;
+  background: var(--color-accent);
   border: 2.5px solid #FFFFFF;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 8px rgba(11, 37, 27, 0.3);
 }
 
 @keyframes gpsWave {
@@ -684,7 +776,7 @@ html, body {
 }
 
 /* ==========================================================================
-   MODAIS (FORMULÁRIO DE OCORRÊNCIA E CONFIGURAÇÃO GITHUB)
+   MODAIS (FUNDO BRANCO COM ALTA LEGIBILIDADE)
    ========================================================================== */
 
 .modal-backdrop {
@@ -693,7 +785,7 @@ html, body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(11, 37, 27, 0.40);
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   z-index: var(--z-modal);
@@ -715,15 +807,16 @@ html, body {
   width: 100%;
   max-width: 480px;
   max-height: 90vh;
-  background: var(--color-bg-sidebar);
-  border: 1px solid var(--glass-border);
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
   border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 16px 48px rgba(11, 37, 27, 0.22);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   transform: translateY(20px);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--color-text-main);
 }
 
 .modal-backdrop.active .modal-card {
@@ -732,8 +825,8 @@ html, body {
 
 .modal-header {
   padding: 16px 20px;
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid var(--glass-border);
+  background: var(--color-bg-subtle);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -741,13 +834,14 @@ html, body {
 
 .modal-title {
   font-size: 16px;
-  font-weight: 800;
-  color: var(--color-accent);
+  font-weight: 900;
+  color: var(--color-text-main);
 }
 
 .modal-body {
   padding: 20px;
   overflow-y: auto;
+  background: #FFFFFF;
 }
 
 .form-group {
@@ -757,27 +851,28 @@ html, body {
 .form-label {
   display: block;
   font-size: 12px;
-  font-weight: 700;
-  color: var(--color-text-muted);
+  font-weight: 800;
+  color: var(--color-text-main);
   margin-bottom: 6px;
 }
 
 .form-control {
   width: 100%;
   padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(82, 183, 136, 0.3);
+  background: #FFFFFF;
+  border: 1px solid #CFDED6;
   border-radius: 8px;
-  color: #fff;
+  color: var(--color-text-main);
   font-size: 13px;
   font-family: inherit;
-  transition: border-color 0.2s;
+  font-weight: 600;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .form-control:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 8px rgba(82, 183, 136, 0.3);
+  box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2);
 }
 
 .form-row {
@@ -795,13 +890,13 @@ html, body {
 }
 
 .btn-photo-action {
-  background: rgba(82, 183, 136, 0.12);
-  border: 1px solid var(--glass-border);
-  color: #FFFFFF;
+  background: var(--color-bg-subtle);
+  border: 1.5px solid var(--color-accent);
+  color: var(--color-text-main);
   padding: 11px 8px;
   border-radius: 8px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -813,16 +908,8 @@ html, body {
 
 .btn-photo-action:hover, .btn-photo-action:active {
   background: var(--color-accent);
-  color: var(--color-bg-darkest);
+  color: #FFFFFF;
   border-color: var(--color-accent);
-}
-
-.btn-photo-camera {
-  border-color: #52B788;
-}
-
-.btn-photo-gallery {
-  border-color: #74C69D;
 }
 
 .camera-stream-box {
@@ -853,14 +940,14 @@ html, body {
   display: flex;
   gap: 8px;
   padding: 10px;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(11, 37, 27, 0.85);
 }
 
 .photo-preview-box {
-  border: 1px solid var(--color-accent);
+  border: 1.5px solid var(--color-accent);
   border-radius: 10px;
   padding: 8px;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--color-bg-subtle);
   margin-bottom: 12px;
   text-align: center;
 }
@@ -872,6 +959,7 @@ html, body {
   object-fit: cover;
   display: block;
   margin: 0 auto 8px auto;
+  border: 1px solid var(--color-border);
 }
 
 .photo-preview-bar {
@@ -883,50 +971,23 @@ html, body {
 
 .modal-footer {
   padding: 14px 20px;
-  background: rgba(0, 0, 0, 0.3);
-  border-top: 1px solid var(--glass-border);
+  background: var(--color-bg-subtle);
+  border-top: 1px solid var(--color-border);
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-.btn-primary {
-  background: var(--color-accent);
-  color: var(--color-bg-darkest);
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: 800;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-primary:hover {
-  background: var(--color-accent-light);
-  transform: translateY(-1px);
-}
-
-.btn-danger {
-  background: var(--color-danger);
-  color: #fff;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 /* ==========================================================================
-   POPUPS CUSTOMIZADOS LEAFLET
+   POPUPS CUSTOMIZADOS LEAFLET & CONTROLE DE CAMADAS
    ========================================================================== */
 
 .leaflet-popup-content-wrapper {
-  background: var(--color-bg-sidebar) !important;
-  color: #fff !important;
+  background: #FFFFFF !important;
+  color: var(--color-text-main) !important;
   border-radius: 12px !important;
-  border: 1px solid var(--glass-border) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+  border: 1.5px solid var(--color-accent) !important;
+  box-shadow: 0 8px 28px rgba(11, 37, 27, 0.18) !important;
   padding: 0 !important;
   overflow: hidden !important;
 }
@@ -937,11 +998,12 @@ html, body {
 }
 
 .leaflet-popup-tip {
-  background: var(--color-bg-sidebar) !important;
+  background: #FFFFFF !important;
 }
 
 .uc-popup {
   padding: 16px;
+  color: var(--color-text-main);
 }
 
 .uc-popup-badge {
@@ -949,26 +1011,28 @@ html, body {
   font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 12px;
   margin-bottom: 6px;
 }
 
 .badge-esec {
-  background: #52B788;
-  color: #081C15;
+  background: #E8F5EE;
+  color: #0B251B;
+  border: 1px solid var(--color-accent);
 }
 
 .badge-apa {
-  background: #74C69D;
-  color: #081C15;
+  background: #EAF4F0;
+  color: #0B251B;
+  border: 1px solid var(--color-accent-light);
 }
 
 .uc-popup-title {
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 900;
   margin-bottom: 6px;
-  color: #fff;
+  color: var(--color-text-main);
 }
 
 .uc-popup-info {
@@ -979,7 +1043,7 @@ html, body {
 
 .uc-popup-desc {
   font-size: 11.5px;
-  color: #d1d5db;
+  color: var(--color-text-main);
   margin-top: 8px;
   line-height: 1.5;
 }
@@ -994,7 +1058,7 @@ html, body {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #fff;
+  color: #FFFFFF;
 }
 
 .occ-popup-icon {
@@ -1003,7 +1067,7 @@ html, body {
 
 .occ-popup-type {
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 900;
   margin: 0;
 }
 
@@ -1011,21 +1075,22 @@ html, body {
   font-size: 9.5px;
   padding: 2px 6px;
   border-radius: 4px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .occ-popup-body {
   padding: 12px 14px;
-  background: var(--color-bg-sidebar);
+  background: #FFFFFF;
+  color: var(--color-text-main);
 }
 
 .occ-desc {
   font-size: 12px;
   margin-bottom: 10px;
   line-height: 1.4;
-  color: #f3f4f6;
+  color: var(--color-text-main);
 }
 
 .occ-photo-thumb img {
@@ -1035,6 +1100,7 @@ html, body {
   border-radius: 6px;
   margin-bottom: 10px;
   cursor: pointer;
+  border: 1px solid var(--color-border);
 }
 
 .occ-meta-grid {
@@ -1043,12 +1109,57 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--color-border);
   padding-top: 8px;
 }
 
 /* ==========================================================================
-   SISTEMA DE TOASTS
+   CONTROLE DE CAMADAS LEAFLET (L.control.layers COM FUNDO BRANCO)
+   ========================================================================== */
+
+.leaflet-top.leaflet-right {
+  top: 76px !important;
+  right: 14px !important;
+}
+
+.leaflet-control-layers {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1.5px solid var(--color-accent) !important;
+  border-radius: 12px !important;
+  color: var(--color-text-main) !important;
+  box-shadow: 0 4px 18px rgba(11, 37, 27, 0.12) !important;
+  font-family: var(--font-family) !important;
+  font-size: 12px !important;
+  padding: 8px 12px !important;
+}
+
+.leaflet-control-layers-toggle {
+  background-color: #FFFFFF !important;
+  border: 1.5px solid var(--color-accent) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 12px rgba(11, 37, 27, 0.12) !important;
+}
+
+.leaflet-control-layers-expanded {
+  padding: 10px 14px !important;
+  min-width: 220px !important;
+  backdrop-filter: none !important;
+}
+
+.leaflet-control-layers-overlays label,
+.leaflet-control-layers-base label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 6px 0 !important;
+  cursor: pointer !important;
+  font-size: 12px !important;
+  color: var(--color-text-main) !important;
+  font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   SISTEMA DE TOASTS COM FUNDO CLARO
    ========================================================================== */
 
 #toast-container {
@@ -1069,35 +1180,35 @@ html, body {
   padding: 12px 16px;
   border-radius: 10px;
   font-size: 12px;
-  font-weight: 700;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  font-weight: 800;
+  box-shadow: 0 8px 24px rgba(11, 37, 27, 0.16);
   pointer-events: auto;
   animation: slideDownToast 0.3s ease;
   transition: opacity 0.3s;
 }
 
 .toast-info {
-  background: #1B4332;
-  border: 1px solid var(--color-accent);
-  color: #fff;
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-accent);
+  color: var(--color-text-main);
 }
 
 .toast-success {
-  background: #081C15;
-  border: 1px solid #52B788;
-  color: #52B788;
+  background: #E8F5EE;
+  border: 1.5px solid var(--color-accent);
+  color: var(--color-text-main);
 }
 
 .toast-warning {
-  background: #2b1f14;
-  border: 1px solid #F4A261;
-  color: #F4A261;
+  background: #FFF8E7;
+  border: 1.5px solid var(--color-warning);
+  color: #8A4B08;
 }
 
 .toast-danger {
-  background: #2b1214;
-  border: 1px solid #E63946;
-  color: #E63946;
+  background: #FDF2F2;
+  border: 1.5px solid var(--color-danger);
+  color: #9B1C1C;
 }
 
 .toast-msg.fade-out {
@@ -1107,81 +1218,6 @@ html, body {
 @keyframes slideDownToast {
   from { transform: translateY(-20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
-}
-/* ==========================================================================
-   CONTROLE DE CAMADAS LEAFLET (L.control.layers) & TOGGLES DAS UCs
-   ========================================================================== */
-
-.leaflet-top.leaflet-right {
-  top: 76px !important;
-  right: 14px !important;
-}
-
-.leaflet-control-layers {
-  background: rgba(19, 42, 19, 0.95) !important;
-  border: 1px solid var(--color-accent) !important;
-  border-radius: 12px !important;
-  color: #FFFFFF !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6) !important;
-  font-family: var(--font-family) !important;
-  font-size: 12px !important;
-  padding: 8px 12px !important;
-}
-
-.leaflet-control-layers-toggle {
-  background-color: rgba(19, 42, 19, 0.95) !important;
-  border: 1.5px solid var(--color-accent) !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
-}
-
-.leaflet-control-layers-expanded {
-  padding: 10px 14px !important;
-  min-width: 220px !important;
-  backdrop-filter: none !important;
-}
-
-.leaflet-control-layers-overlays label,
-.leaflet-control-layers-base label {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  margin: 6px 0 !important;
-  cursor: pointer !important;
-  font-size: 12px !important;
-}
-
-/* Toggles de Limites das UCs na Sidebar */
-.uc-layer-toggles-box {
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 8px;
-  padding: 10px 12px;
-  border: 1px solid rgba(82, 183, 136, 0.15);
-  margin-bottom: 8px;
-}
-
-.uc-toggle-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
-  user-select: none;
-}
-
-.legend-line {
-  display: inline-block;
-  width: 22px;
-  border-radius: 2px;
-}
-
-.line-esec {
-  height: 4px;
-  background-color: #52B788;
-}
-
-.line-apa {
-  height: 0px;
-  border-bottom: 3px dashed #74C69D;
 }
 
 /* Responsividade Mobile Adicional */

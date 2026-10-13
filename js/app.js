@@ -113,10 +113,10 @@ class App {
     // Controle Deslizante de Opacidade/Transparência da Sidebar
     const panelOpacitySlider = document.getElementById('panel-opacity-slider');
     const panelOpacityVal = document.getElementById('panel-opacity-val');
-    const savedOpacity = localStorage.getItem('sidebar_opacity') || '0.88';
+    const savedOpacity = localStorage.getItem('sidebar_opacity') || '0.96';
 
     const applySidebarOpacity = (val) => {
-      sidebar.style.background = `rgba(19, 42, 19, ${val})`;
+      sidebar.style.background = `rgba(255, 255, 255, ${val})`;
       if (panelOpacityVal) panelOpacityVal.textContent = `${Math.round(val * 100)}%`;
       if (panelOpacitySlider) panelOpacitySlider.value = val;
       localStorage.setItem('sidebar_opacity', val);

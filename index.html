@@ -6,7 +6,7 @@
   <title>ICMBio WebGIS • Work Drones Geo (Esec Guanabara & APA Guapimirim)</title>
 
   <!-- PWA & Mobile Meta Tags -->
-  <meta name="theme-color" content="#132A13">
+  <meta name="theme-color" content="#FFFFFF">
   <meta name="description" content="WebGIS PWA de Alta Performance para Fiscalização e Monitoramento Ambiental da Esec Guanabara e APA Guapimirim com Imagens Sentinel-2 e Sincronização GitHub.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -67,9 +67,9 @@
       <div class="sidebar-opacity-bar">
         <div class="sidebar-opacity-label">
           <span>👁️ Transparência do Painel:</span>
-          <span id="panel-opacity-val">88%</span>
+          <span id="panel-opacity-val">96%</span>
         </div>
-        <input type="range" id="panel-opacity-slider" min="0.15" max="1.0" step="0.05" value="0.88" class="range-slider">
+        <input type="range" id="panel-opacity-slider" min="0.15" max="1.0" step="0.05" value="0.96" class="range-slider">
       </div>
 
       <!-- Abas de Navegação -->
@@ -188,7 +188,7 @@
               <label class="uc-toggle-item" style="cursor: pointer;">
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <span class="legend-line line-esec"></span>
-                  <span style="font-weight: 700; color: #fff;">ESEC da Guanabara</span>
+                  <span style="font-weight: 700; color: var(--color-text-main);">ESEC da Guanabara</span>
                 </div>
                 <input type="checkbox" id="check-layer-esec" checked style="accent-color: var(--color-accent); cursor: pointer;">
               </label>
@@ -196,7 +196,7 @@
               <label class="uc-toggle-item" style="cursor: pointer; margin-top: 8px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
                   <span class="legend-line line-apa"></span>
-                  <span style="font-weight: 700; color: #fff;">APA de Guapimirim</span>
+                  <span style="font-weight: 700; color: var(--color-text-main);">APA de Guapimirim</span>
                 </div>
                 <input type="checkbox" id="check-layer-apa" checked style="accent-color: var(--color-accent-light); cursor: pointer;">
               </label>
@@ -247,7 +247,7 @@
               ➕ Nova Intercorrência de Campo
             </button>
 
-            <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 12px;">
+            <div style="border-top: 1px solid var(--color-border); padding-top: 12px;">
               <span class="form-label">Exportar Dados para Relatório / Backup:</span>
               <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
                 <button id="btn-exp-geojson" class="btn-secondary">📥 Baixar GeoJSON Completo</button>
@@ -281,7 +281,7 @@
                 document.getElementById('calc-utm-result').textContent = `E: ${res.easting.toFixed(2)}m | N: ${res.northing.toFixed(2)}m (UTM 23S)`;
               }
             ">Calcular UTM 23S</button>
-            <div id="calc-utm-result" style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--color-accent); text-align: center; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">
+            <div id="calc-utm-result" style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--color-text-main); text-align: center; background: var(--color-bg-card); border: 1px solid var(--color-border); padding: 8px; border-radius: 6px;">
               Clique no botão para converter
             </div>
           </div>

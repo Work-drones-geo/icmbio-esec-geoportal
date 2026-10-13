@@ -1,5 +1,5 @@
-const CACHE_NAME = 'icmbio-geoportal-v1.5';
-const TILE_CACHE_NAME = 'icmbio-tiles-cache-v1.5';
+const CACHE_NAME = 'icmbio-geoportal-v1.6';
+const TILE_CACHE_NAME = 'icmbio-tiles-cache-v1.6';
 
 const STATIC_ASSETS = [
   './',
